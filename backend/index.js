@@ -1,5 +1,5 @@
 const { HttpStatusCode } = require('axios');
-const { query } = require('./ollamaClient');
+const { chat } = require('./ollamaClient');
 
 const express = require('express');
 
@@ -8,23 +8,31 @@ const PORT = 8000;
 
 app.use(express.json()); // Middleware to auto parse JSON in request bodies
 
-app.get('/', (request, response) => {
-    response.send('Hello World!');
-});
+const conversationHistory = [];
 
 app.post('/chat', async (request, response) => {
 
-    const { message } = request.body;
+    const userMessage = request.body.message;
+    conversationHistory.push({ 
+        role: 'user', 
+        content: userMessage 
+    });
 
     try {
-        const result = await query(message);
-        response.json({ result });
+        const assistantReply = await chat(conversationHistory);
+        conversationHistory.push({
+            role: 'assistant',
+            content: assistantReply,
+        });
+
+        console.log(conversationHistory);
+
+        response.json({ assistantReply });
 
     } catch (error) {
+        console.error(error);
         response.status(HttpStatusCode.InternalServerError).json({ error: 'Failed to get response from Ollama'});
     }
-    
-    response.json({ response: `You said ${message}` });
 });
 
 app.listen(PORT, () => {
