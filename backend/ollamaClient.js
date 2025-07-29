@@ -16,8 +16,6 @@ async function chat(messages, model = 'llama3.2:3b') {
             stream: false
         });
 
-        console.log(response);
-
         return response.data.message.content;
 
     } catch (error) {

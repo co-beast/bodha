@@ -24,9 +24,7 @@ app.post('/chat', async (request, response) => {
             role: 'assistant',
             content: assistantReply,
         });
-
-        console.log(conversationHistory);
-
+        
         response.json({ assistantReply });
 
     } catch (error) {
