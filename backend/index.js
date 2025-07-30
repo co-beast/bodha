@@ -1,12 +1,14 @@
 const { HttpStatusCode } = require('axios');
-const { chat } = require('./ollamaClient');
-
 const express = require('express');
+const cors = require('cors');
+
+const { chat } = require('./ollamaClient');
 
 const app = express();
 const PORT = 8000;
 
 app.use(express.json()); // Middleware to auto parse JSON in request bodies
+app.use(cors()); // Enable CORS for all routes
 
 const conversationHistory = [];
 
