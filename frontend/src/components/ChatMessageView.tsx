@@ -5,7 +5,7 @@ type Props = {
     content: string;
 };
 
-export const ChatMessageBubble = ({ role, content } : Props) => {
+export const ChatMessageView = ({ role, content } : Props) => {
 
     const isUser = role === Roles.USER;
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import { ChatInput } from "./components/ChatInput";
-import { ChatMessages } from "./components/ChatBox";
+import { ChatInputView } from "./components/ChatInputView";
+import { ChatMessagesView } from "./components/ChatBoxView";
 
 import { sendMessage } from "./api/chat";
 import { Roles, type ChatMessage } from "./types/chat";
@@ -40,8 +40,8 @@ function App() {
   return (
     <div className="p-4 max-w-md mx-auto">
       <h1 className="text-xl font-bold mb-4">Private ChatGPT</h1>
-      <ChatMessages messages={messages} loading={loading} />
-      <ChatInput onSend={handleSend} loading={loading} />
+      <ChatMessagesView messages={messages} loading={loading} />
+      <ChatInputView onSend={handleSend} loading={loading} />
     </div>
   );
 }

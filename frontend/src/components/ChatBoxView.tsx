@@ -1,19 +1,19 @@
 import type { ChatMessage } from "../types/chat";
-import { ChatMessageBubble } from "./ChatMessageView";
+import { ChatMessageView } from "./ChatMessageView";
 
 type Props = {
   messages: ChatMessage[];
   loading: boolean;
 };
 
-export const ChatMessages = ({ messages, loading }: Props) => {
+export const ChatMessagesView = ({ messages, loading }: Props) => {
   return (
     <div className="space-y-2">
       {messages.length === 0 ? (
         <p className="text-gray-500">Start the conversation...</p>
       ) : (
         messages.map((message, index) => (
-          <ChatMessageBubble
+          <ChatMessageView
             key={index}
             role={message.role}
             content={message.content}
@@ -25,4 +25,4 @@ export const ChatMessages = ({ messages, loading }: Props) => {
   );
 };
 
-export default ChatMessages;
+export default ChatMessagesView;

@@ -5,7 +5,7 @@ type Props = {
     loading: boolean;
 };
 
-export const ChatInput = ({ onSend, loading }: Props) => {
+export const ChatInputView = ({ onSend, loading }: Props) => {
     const [input, setInput] = useState("");
 
     const handleSend = () => {
