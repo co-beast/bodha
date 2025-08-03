@@ -3,7 +3,7 @@ const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
 
-const { chat } = require('./ollamaClient');
+const { chat, chatStream } = require('./ollamaClient');
 
 const app = express();
 const PORT = 8000;
@@ -49,6 +49,30 @@ app.post('/chat', async (request, response) => {
     } catch (error) {
         console.error(error);
         response.status(HttpStatusCode.InternalServerError).json({ error: 'Failed to get response from Ollama'});
+    }
+});
+
+app.post('/chat/stream', async (request, response) => {
+
+    const userMessage = request.body.message;
+    if (!userMessage) {
+        return response.status(HttpStatusCode.BadRequest).json({ error: 'Message is required' });
+    }
+
+    if (!request.session.conversation) {
+        request.session.conversation = [];
+    }
+
+    request.session.conversation.push({
+        role: 'user',
+        content: userMessage
+    });
+
+    try {
+        await chatStream(request.session.conversation, response);
+    } catch (error) {
+        console.error(error);
+        response.status(HttpStatusCode.InternalServerError).json({ error: 'Failed to get response from Ollama' });
     }
 });
 
