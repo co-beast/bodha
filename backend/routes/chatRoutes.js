@@ -5,6 +5,13 @@ const router = express.Router();
 
 const { chat, chatStream } = require('../services/ollamaClient.js');
 
+/**
+ * Receives a user message, appends it to the session conversation,
+ * and returns the assistant's reply.
+ * @route POST /chat/message
+ * @param {Object} request - Express request object containing user message
+ * @param {Object} response - Express response object to send back the assistant's reply
+ */
 router.post('/message', async (request, response) => {
 
     const userMessage = request.body.message;
@@ -36,6 +43,13 @@ router.post('/message', async (request, response) => {
     }
 });
 
+/**
+ * Receives a user message, appends it to the session conversation,
+ * and streams the assistant's reply back to the client.
+ * @route POST /chat/message/stream
+ * @param {Object} request - Express request object containing user message
+ * @param {Object} response - Express response object to stream the assistant's reply
+ */
 router.post('/message/stream', async (request, response) => {
 
     const userMessage = request.body.message;
@@ -60,6 +74,12 @@ router.post('/message/stream', async (request, response) => {
     }
 });
 
+/**
+ * Deletes the conversation history stored in the session.
+ * @route DELETE /chat      
+ * @param {Object} request - Express request object
+ * @param {Object} response - Express response object to confirm session cleared
+ */
 router.delete('/', (request, response) => {
     if (!request.session) {
         return response.status(HttpStatusCode.BadRequest).json({ error: 'No session found.' });

@@ -7,7 +7,7 @@ const { HOST, PORT, PATH, DEFAULT_MODEL } = require('../config/ollamaConfig.js')
 const OLLAMA_URL = `http://${HOST}:${PORT}${PATH}`;
 
 /**
- * Sends conversation history to Ollama and returns assistant reply in one shot.
+ * Sends conversation history as a list of messages to Ollama and returns assistant's reply in one shot.
  * @param {Array} messages - [{ role: 'user', content: 'Hello' }]
  * @param {string} model - The large language model to use
  */
@@ -29,7 +29,7 @@ async function chat(messages, model = DEFAULT_MODEL) {
 }
 
 /** 
- * Sends conversation history to Ollama and streams the assistant reply.
+ * Sends conversation history as a list of messages to Ollama and streams the assistant's reply.
  * @param {Array} messages - [{ role: 'user', content: 'Hello' }]
  * @param {Object} response - Express response object to send streamed data
  * @param {string} model - The large language model to use
@@ -78,6 +78,11 @@ async function chatStream(messages, response, model = DEFAULT_MODEL) {
     ollamaRequest.end();
 }
 
+//#region Helper Functions
+
+/** * Creates options for the Ollama HTTP request.
+ * @returns {Object} Options for the HTTP request
+ */ 
 const createOllamaOptions = () => {
     return {
         hostname: HOST,
@@ -89,5 +94,6 @@ const createOllamaOptions = () => {
         }
     };
 }
+//#endregion
 
 module.exports = { chat, chatStream };
