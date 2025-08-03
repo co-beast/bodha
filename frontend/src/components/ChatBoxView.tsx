@@ -8,7 +8,7 @@ type Props = {
 
 export const ChatBoxView = ({ messages, loading }: Props) => {
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 whitespace-pre-wrap">
       {messages.length === 0 ? (
         <p className="text-gray-500">Start the conversation...</p>
       ) : (

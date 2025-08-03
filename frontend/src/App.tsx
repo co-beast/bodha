@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { ChatInputView } from "./components/ChatInputView";
 import { ChatBoxView } from "./components/ChatBoxView";
 
-import { sendMessage, resetChat } from "./api/chat";
+import { sendMessageStream, resetChat } from "./api/chat";
 import { Roles, type ChatMessage } from "./types/chat";
 
 function App() {
@@ -30,21 +30,38 @@ function App() {
       content: message 
     };
 
-    const updatedMessages = [...messages, userMessage];
-    setMessages(updatedMessages);
+    const assistantMessage: ChatMessage = {
+      role: Roles.ASSISTANT,
+      content: "",
+    };
+
+    setMessages((prev) => [...prev, userMessage, assistantMessage]);
     setLoading(true);
 
+    // Start streaming the assistant's response
     try {
-      const assistantReply = await sendMessage(message);
-      const assistantMessage: ChatMessage = {
-        role: Roles.ASSISTANT,
-        content: assistantReply,
-      };
+      let fullResponse = "";
+      for await (const token of sendMessageStream(message)) {
+        fullResponse += token;
+        
+        setMessages((prev) => {
 
-      setMessages((prev) => [...prev, assistantMessage]);
+          const lastIndex = prev.length - 1;
+          if (prev[lastIndex].role !== Roles.ASSISTANT) { // ensure we are updating the assistant's message
+            return prev; 
+          }
+
+          const updatedMessages = [...prev];
+          updatedMessages[lastIndex] = {
+            ...updatedMessages[lastIndex],
+            content: fullResponse,
+          };
+          return updatedMessages;
+        });
+      }
     } catch (error) {
-      console.error("Error:", error);
-      // TODO: Handle error (e.g., show a notification)
+      console.error("Error sending message:", error);
+      // TODO: Handle error state, e.g., show an error message to the user
     } finally {
       setLoading(false);
     }

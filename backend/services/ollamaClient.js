@@ -6,6 +6,7 @@ const { HttpStatusCode } = require('axios');
 const { HOST, PORT, PATH, DEFAULT_MODEL } = require('../config/ollamaConfig.js');
 const OLLAMA_URL = `http://${HOST}:${PORT}${PATH}`;
 
+// TODO: remove this when streaming is fully implemented
 /**
  * Sends conversation history as a list of messages to Ollama and returns assistant's reply in one shot.
  * @param {Array} messages - [{ role: 'user', content: 'Hello' }]
@@ -30,7 +31,18 @@ async function chat(messages, model = DEFAULT_MODEL) {
 
 /** 
  * Sends conversation history as a list of messages to Ollama and streams the assistant's reply.
- * @param {Array} messages - [{ role: 'user', content: 'Hello' }]
+ *
+ * Example Ollama streamed chunk (NDJSON format):
+ * {
+ *   "message": {
+ *     "role": "assistant",
+ *     "content": "Hello"
+ *   },
+ *   "done": false
+ * }
+ * 
+ * The response is sent as Server-Sent Events (SSE) to the client.
+* @param {Array} messages - [{ role: 'user', content: 'Hello' }]
  * @param {Object} response - Express response object to send streamed data
  * @param {string} model - The large language model to use
  */
@@ -43,16 +55,19 @@ async function chatStream(messages, response, model = DEFAULT_MODEL) {
         response.setHeader('Cache-Control', 'no-cache');
         response.setHeader('Connection', 'keep-alive');
 
-        ollamaResponse.on('data', (chunk) => {
-            const lines = chunk.toString().trim().split('\n');
-            for (const line of lines) {
-                if (!line) continue;
+        ollamaResponse.on('data', (rawChunk) => {
+            const ndJsonLines = rawChunk.toString().trim().split('\n');
+            for (const ndJsonLine of ndJsonLines) {
+                if (!ndJsonLine) continue;
                 try {
-                    const data = JSON.parse(line);
-                    const content = data.message?.content || '';
-                    response.write(`data: ${content}\n\n`);
+                    const parsedJsonChunk = JSON.parse(ndJsonLine);
+                    const token = parsedJsonChunk.message?.content || '';
+
+                    // Escape newlines so they can be sent via SSE and reconstructed in frontend
+                    const escapedToken = token.replace(/\n/g, '\\n');
+                    response.write(`data: ${escapedToken}\n\n`);
                 } catch (error) {
-                    console.error('Stream parse error:', error);
+                    console.error('Failed to parse Ollama chunk:', error);
                 }
             }
         });
