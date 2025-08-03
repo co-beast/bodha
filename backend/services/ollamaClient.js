@@ -3,17 +3,18 @@ const http = require('http');
 
 const { HttpStatusCode } = require('axios');
 
-const CONFIG = require('./config');
+const { HOST, PORT, PATH, DEFAULT_MODEL } = require('../config/ollamaConfig.js');
+const OLLAMA_URL = `http://${HOST}:${PORT}${PATH}`;
 
 /**
  * Sends conversation history to Ollama and returns assistant reply in one shot.
  * @param {Array} messages - [{ role: 'user', content: 'Hello' }]
  * @param {string} model - The large language model to use
  */
-async function chat(messages, model = CONFIG.OLLAMA_MODEL_DEFAULT) {
+async function chat(messages, model = DEFAULT_MODEL) {
 
     try {
-        const response = await axios.post(CONFIG.OLLAMA_URL, {
+        const response = await axios.post(OLLAMA_URL, {
             model,
             messages,
             stream: false
@@ -33,7 +34,7 @@ async function chat(messages, model = CONFIG.OLLAMA_MODEL_DEFAULT) {
  * @param {Object} response - Express response object to send streamed data
  * @param {string} model - The large language model to use
  */
-async function chatStream(messages, response, model = CONFIG.OLLAMA_MODEL_DEFAULT) {
+async function chatStream(messages, response, model = DEFAULT_MODEL) {
 
     const options = createOllamaOptions();
 
@@ -79,9 +80,9 @@ async function chatStream(messages, response, model = CONFIG.OLLAMA_MODEL_DEFAUL
 
 const createOllamaOptions = () => {
     return {
-        hostname: CONFIG.OLLAMA_HOST,
-        port: CONFIG.OLLAMA_PORT,
-        path: CONFIG.OLLAMA_API_PATH,
+        hostname: HOST,
+        port: PORT,
+        path: PATH,
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

@@ -1,5 +1,5 @@
 export const sendMessage = async (message: string) => {
-  const response = await fetch("http://localhost:8000/chat", {
+  const response = await fetch("http://localhost:8000/chat/message", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -17,8 +17,8 @@ export const sendMessage = async (message: string) => {
 };
 
 export const resetChat = async () => {
-  const response = await fetch("http://localhost:8000/reset", {
-    method: "POST",
+  const response = await fetch("http://localhost:8000/chat", {
+    method: "DELETE",
     credentials: "include", // Include cookies for session management
   });
 
