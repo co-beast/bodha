@@ -6,7 +6,7 @@ type Props = {
   loading: boolean;
 };
 
-export const ChatMessagesView = ({ messages, loading }: Props) => {
+export const ChatBoxView = ({ messages, loading }: Props) => {
   return (
     <div className="space-y-2">
       {messages.length === 0 ? (
@@ -25,4 +25,4 @@ export const ChatMessagesView = ({ messages, loading }: Props) => {
   );
 };
 
-export default ChatMessagesView;
+export default ChatBoxView;

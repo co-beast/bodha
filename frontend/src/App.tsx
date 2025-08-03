@@ -1,17 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { ChatInputView } from "./components/ChatInputView";
-import { ChatMessagesView } from "./components/ChatBoxView";
+import { ChatBoxView } from "./components/ChatBoxView";
 
-import { sendMessage } from "./api/chat";
+import { sendMessage, resetChat } from "./api/chat";
 import { Roles, type ChatMessage } from "./types/chat";
 
 function App() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const handleSend = async (message: string) => {    
-    
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const result = await resetChat();
+        console.log(`${result}`);
+      } catch (error) {
+        console.error("Error resetting chat:", error);
+      }
+    };
+
+    init();
+  }, []);
+
+  const handleSend = async (message: string) => {
+
     const userMessage: ChatMessage = { 
       role: Roles.USER, 
       content: message 
@@ -40,7 +53,7 @@ function App() {
   return (
     <div className="p-4 max-w-md mx-auto">
       <h1 className="text-xl font-bold mb-4">Private ChatGPT</h1>
-      <ChatMessagesView messages={messages} loading={loading} />
+      <ChatBoxView messages={messages} loading={loading} />
       <ChatInputView onSend={handleSend} loading={loading} />
     </div>
   );
