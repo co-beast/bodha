@@ -1,4 +1,5 @@
 import { Roles } from "../types/chat";
+import ReactMarkdown from "react-markdown";
 
 type Props = {
     role: 'user' | 'assistant';
@@ -15,7 +16,7 @@ export const ChatMessageView = ({ role, content } : Props) => {
     return (
         <div className={`mb-2 ${alignmentClass}`}>
             <span className={`inline-block px-3 py-1 rounded ${backgroundClass}`}>
-                {content}
+                <ReactMarkdown>{content}</ReactMarkdown>
             </span>
         </div>
     );
