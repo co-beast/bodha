@@ -10,14 +10,11 @@ export const ChatMessageView = ({ role, content } : Props) => {
 
     const isUser = role === Roles.USER;
 
-    const alignmentClass = isUser ? 'text-right' : 'text-left';
-    const backgroundClass = isUser ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black';
-
     return (
-        <div className={`mb-2 ${alignmentClass}`}>
-            <span className={`inline-block px-3 py-1 rounded ${backgroundClass}`}>
+        <div className={`w-full flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
+            <div className={`whitespace-pre-wrap ${isUser ? "bg-[#2f2f2f] text-white rounded-xl px-4 py-2 max-w-[75%]" : "w-full text-[#ececf1] px-4 py-2"}`}>
                 <ReactMarkdown>{content}</ReactMarkdown>
-            </span>
+            </div>
         </div>
     );
 };
