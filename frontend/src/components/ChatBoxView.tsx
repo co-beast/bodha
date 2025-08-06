@@ -10,7 +10,7 @@ export const ChatBoxView = ({ messages, loading }: Props) => {
   return (
     <div className="space-y-2">
       {messages.length === 0 ? (
-        <p className="text-gray-500">Start the conversation...</p>
+        <p className="text-gray-400">Start the conversation...</p>
       ) : (
         messages.map((message, index) => (
           <ChatMessageView

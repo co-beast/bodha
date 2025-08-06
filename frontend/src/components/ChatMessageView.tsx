@@ -11,8 +11,8 @@ export const ChatMessageView = ({ role, content } : Props) => {
     const isUser = role === Roles.USER;
 
     return (
-        <div className={`w-full flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
-            <div className={`whitespace-pre-wrap ${isUser ? "bg-[#2f2f2f] text-white rounded-xl px-4 py-2 max-w-[75%]" : "w-full text-[#ececf1] px-4 py-2"}`}>
+        <div className={`w-full flex dark ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
+            <div className={`prose dark:prose-invert px-4 py-2 ${isUser ? "bg-[#2f2f2f] text-white rounded-xl max-w-[75%] ml-auto" : "w-full text-[#ececf1] max-w-none mb-8"}`}>
                 <ReactMarkdown>{content}</ReactMarkdown>
             </div>
         </div>

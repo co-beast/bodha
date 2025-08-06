@@ -31,6 +31,7 @@ export const ChatInputView = ({ onSend, loading }: Props) => {
                 placeholder="Type your message..."
                 className="flex-1 p-2 border rounded"
                 disabled={loading}
+                style={{ color: "black" }}
             />
             <button
                 onClick={handleSend}

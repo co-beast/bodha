@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,
+body {
+  @apply font-sans font-normal leading-relaxed text-[#ececf1] bg-[#212121];
+  height: 100%;
+}

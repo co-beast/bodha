@@ -68,15 +68,19 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white text-black dark:bg-[#212121] dark:text-[#ececf1]">
-      <header className="p-4 border-b border-gray-200 shadow-sm text-center dark:border-[#2e2e2e]">
-        <h1 className="text-xl font-semibold">Private ChatGPT</h1>
+    <div className="flex flex-col h-screen bg-[#212121] text-[#ececf1]">
+      <header className="p-4 border-b border-gray-600 text-center">
+        <h1 className="text-xl font">Private ChatGPT</h1>
       </header>
       <main className="flex-1 p-4 overflow-y-auto">
-        <ChatBoxView messages={messages} loading={loading} />
+        <div className="max-w-3xl mx-auto">
+          <ChatBoxView messages={messages} loading={loading} />
+        </div>
       </main>
-      <footer className="p-4 border-t border-gray-200 dark:border-[#2e2e2e]">
-        <ChatInputView onSend={handleSend} loading={loading} />
+      <footer className="p-4 border-t border-gray-600">
+        <div className="max-w-4xl mx-auto">
+          <ChatInputView onSend={handleSend} loading={loading} />
+        </div>
       </footer>
     </div>
   );
