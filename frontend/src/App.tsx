@@ -77,7 +77,7 @@ function App() {
           <ChatBoxView messages={messages} loading={loading} />
         </div>
       </main>
-      <footer className="p-4 border-t border-gray-600">
+      <footer className="p-4">
         <div className="max-w-4xl mx-auto">
           <ChatInputView onSend={handleSend} loading={loading} />
         </div>

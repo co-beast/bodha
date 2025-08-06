@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useEffect, useState } from "react";
 
 type Props = {
     onSend: (message: string) => void;
@@ -7,6 +7,14 @@ type Props = {
 
 export const ChatInputView = ({ onSend, loading }: Props) => {
     const [input, setInput] = useState("");
+    const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+    useEffect(() => {
+        if (textAreaRef.current) {
+            textAreaRef.current.style.height = "auto";
+            textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`; 
+        }
+    }, [input]);
 
     const handleSend = () => {
         if (input.trim()) {
@@ -15,31 +23,25 @@ export const ChatInputView = ({ onSend, loading }: Props) => {
         }
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter" && !loading) {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
             handleSend();
         }
     };
 
     return (
-        <div className="flex gap-2">
-            <input
-                type="text"
+        <div className="flex items-end gap-2 bg-[#2f2f2f] p-2 rounded-xl shadow-md">
+            <textarea
+                ref={textAreaRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Type your message..."
-                className="flex-1 p-2 border rounded"
+                rows={1}
+                className="flex-1 resize-none bg-transparent outline-none text-white placeholder-gray-400 p-2 max-h-48 overflow-y-auto"
                 disabled={loading}
-                style={{ color: "black" }}
             />
-            <button
-                onClick={handleSend}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-                disabled={loading}
-            >
-                {loading ? "Sending..." : "Send"}
-            </button>
         </div>
     );
 };
