@@ -1,20 +1,17 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useState } from "react";
+import { useAutoResizeTextArea } from "../hooks/useAutoResizeTextArea";
+import { SendButton } from "./SendButton";
 
 type Props = {
     onSend: (message: string) => void;
     loading: boolean;
 };
 
-export const ChatInputView = ({ onSend, loading }: Props) => {
+export const ChatInput = ({ onSend, loading }: Props) => {
     const [input, setInput] = useState("");
     const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
-    useEffect(() => {
-        if (textAreaRef.current) {
-            textAreaRef.current.style.height = "auto";
-            textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`; 
-        }
-    }, [input]);
+    useAutoResizeTextArea(textAreaRef, input);
 
     const handleSend = () => {
         if (input.trim()) {
@@ -39,9 +36,10 @@ export const ChatInputView = ({ onSend, loading }: Props) => {
                 onKeyDown={handleKeyDown}
                 placeholder="Type your message..."
                 rows={1}
-                className="flex-1 resize-none bg-transparent outline-none text-white placeholder-gray-400 p-2 max-h-48 overflow-y-auto"
+                className="flex-1 resize-none bg-transparent outline-none font-light text-white placeholder-gray-400 p-2 max-h-48 overflow-y-auto"
                 disabled={loading}
             />
+            <SendButton onClick={handleSend} disabled={loading || !input.trim()} />
         </div>
     );
 };
