@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import type { ChatMessage } from "../types/chat";
+import type { ChatMessage } from "../../../types/chat";
 import { Message } from "./Message";
 
 type Props = {

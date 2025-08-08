@@ -1,4 +1,4 @@
-import incognito from "./../assets/incognito.png";
+import incognito from "./../../assets/incognito.png";
 
 type Props = {
     size?: "sm" | "lg";

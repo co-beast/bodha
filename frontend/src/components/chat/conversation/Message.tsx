@@ -1,4 +1,4 @@
-import { Roles } from "../types/chat";
+import { Roles } from "../../../types/chat";
 import { UserMessage } from "./UserMessage";
 import { AssistantMessage } from "./AssistantMessage";
 

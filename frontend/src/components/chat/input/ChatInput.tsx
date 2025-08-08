@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { useAutoResizeTextArea } from "../hooks/useAutoResizeTextArea";
+import { useAutoResizeTextArea } from "../../../hooks/useAutoResizeTextArea";
 import { SendButton } from "./SendButton";
 
 type Props = {
