@@ -1,33 +1,6 @@
-const axios = require('axios');
 const http = require('http');
-
 const { HttpStatusCode } = require('axios');
-
 const { HOST, PORT, PATH, DEFAULT_MODEL } = require('../config/ollamaConfig.js');
-const OLLAMA_URL = `http://${HOST}:${PORT}${PATH}`;
-
-// TODO: remove this when streaming is fully implemented
-/**
- * Sends conversation history as a list of messages to Ollama and returns assistant's reply in one shot.
- * @param {Array} messages - [{ role: 'user', content: 'Hello' }]
- * @param {string} model - The large language model to use
- */
-async function chat(messages, model = DEFAULT_MODEL) {
-
-    try {
-        const response = await axios.post(OLLAMA_URL, {
-            model,
-            messages,
-            stream: false
-        });
-
-        return response.data.message.content;
-
-    } catch (error) {
-        console.error(`Ollama error: ${error}`);
-        throw new Error('Failed to get response from Ollama');
-    }
-}
 
 /** 
  * Sends conversation history as a list of messages to Ollama and streams the assistant's reply.
@@ -111,4 +84,4 @@ const createOllamaOptions = () => {
 }
 //#endregion
 
-module.exports = { chat, chatStream };
+module.exports = { chatStream };
