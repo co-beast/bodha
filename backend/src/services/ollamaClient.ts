@@ -1,6 +1,15 @@
-const http = require('http');
-const { HttpStatusCode } = require('axios');
-const { HOST, PORT, PATH, DEFAULT_MODEL } = require('../config/ollamaConfig.js');
+import http from 'http';
+import { HttpStatusCode } from 'axios';
+import { HOST, PORT, PATH, DEFAULT_MODEL } from '../config/ollamaConfig';
+import { Response } from 'express';
+
+interface OllamaRequestOptions {
+    hostname: string;
+    port: number;
+    path: string;
+    method: string;
+    headers: Record<string, string>;
+}
 
 /** 
  * Sends conversation history as a list of messages to Ollama and streams the assistant's reply.
@@ -19,10 +28,13 @@ const { HOST, PORT, PATH, DEFAULT_MODEL } = require('../config/ollamaConfig.js')
  * @param {Object} response - Express response object to send streamed data
  * @param {string} model - The large language model to use
  */
-async function chatStream(messages, response, model = DEFAULT_MODEL) {
-
+async function chatStream(
+    messages: ChatMessage[], 
+    response: Response, 
+    model: string = DEFAULT_MODEL
+) {
     const options = createOllamaOptions();
-
+    
     const ollamaRequest = http.request(options, (ollamaResponse) => {
         response.setHeader('Content-Type', 'text/event-stream');
         response.setHeader('Cache-Control', 'no-cache');
@@ -71,7 +83,7 @@ async function chatStream(messages, response, model = DEFAULT_MODEL) {
 /** * Creates options for the Ollama HTTP request.
  * @returns {Object} Options for the HTTP request
  */ 
-const createOllamaOptions = () => {
+const createOllamaOptions = (): OllamaRequestOptions => {
     return {
         hostname: HOST,
         port: PORT,
@@ -84,4 +96,4 @@ const createOllamaOptions = () => {
 }
 //#endregion
 
-module.exports = { chatStream };
+export { chatStream };
