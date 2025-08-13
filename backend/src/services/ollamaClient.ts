@@ -1,7 +1,5 @@
 import http from 'http';
-import { HttpStatusCode } from 'axios';
 import { HOST, PORT, PATH, DEFAULT_MODEL } from '../config/ollamaConfig';
-import { Response } from 'express';
 
 interface OllamaRequestOptions {
     hostname: string;
@@ -24,76 +22,94 @@ interface OllamaRequestOptions {
  * }
  * 
  * The response is sent as Server-Sent Events (SSE) to the client.
-* @param {Array} messages - [{ role: 'user', content: 'Hello' }]
- * @param {Object} response - Express response object to send streamed data
- * @param {string} model - The large language model to use
  */
-async function chatStream(
-    messages: ChatMessage[], 
-    response: Response, 
+export async function* chatStreamGenerator(
+    messages: ChatMessage[],
     model: string = DEFAULT_MODEL
-) {
-    const options = createOllamaOptions();
-    
-    const ollamaRequest = http.request(options, (ollamaResponse) => {
-        response.setHeader('Content-Type', 'text/event-stream');
-        response.setHeader('Cache-Control', 'no-cache');
-        response.setHeader('Connection', 'keep-alive');
+): AsyncGenerator<string> {
 
-        ollamaResponse.on('data', (rawChunk) => {
-            const ndJsonLines = rawChunk.toString().trim().split('\n');
-            for (const ndJsonLine of ndJsonLines) {
-                if (!ndJsonLine) continue;
+    const requestOptions = createOllamaRequestOptions();
+
+    let pendingResolve: ((value: string) => void) | null = null;
+    const queue: string[] = [];
+    let done = false;
+
+    const ollamaRequest = http.request(requestOptions, (ollamaResponse) => {
+
+        let buffer = '';
+
+        ollamaResponse.on('data', (chunk) => {
+            buffer += chunk.toString();
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || ''; // keep incomplete line
+
+            for (const line of lines) {
+                if (!line.trim()) continue;
                 try {
-                    const parsedJsonChunk = JSON.parse(ndJsonLine);
-                    const token = parsedJsonChunk.message?.content || '';
+                    const parsed = JSON.parse(line);
+                    const token = parsed.message?.content || '';
 
-                    // Escape newlines so they can be sent via SSE and reconstructed in frontend
-                    const escapedToken = token.replace(/\n/g, '\\n');
-                    response.write(`data: ${escapedToken}\n\n`);
+                    if (token) {
+                        if (pendingResolve) {
+                            pendingResolve(token);
+                            pendingResolve = null;
+                        } else {
+                            queue.push(token);
+                        }
+                    }
+
                 } catch (error) {
-                    console.error('Failed to parse Ollama chunk:', error);
+                    console.error('Failed to parse ollama chunk response', error);
                 }
             }
         });
 
         ollamaResponse.on('end', () => {
-            response.write('event: end\ndata: \n\n');
-            response.end();
+            done = true;
+            if (pendingResolve) {
+                pendingResolve('');
+                pendingResolve = null;
+            }
         });
     });
 
     ollamaRequest.on('error', (error) => {
-        console.error('Ollama stream error:', error);
-        response.status(HttpStatusCode.InternalServerError).end();
+        console.error('Ollama request error:', error);
+        done = true;
+        if (pendingResolve) {
+            pendingResolve('');
+            pendingResolve = null;
+        }
     });
 
-    const requestBody = JSON.stringify({
-        model,
-        messages,
-        stream: true
-    });
+    ollamaRequest.write(
+        JSON.stringify({ model, messages, stream: true })
+    );
 
-    ollamaRequest.write(requestBody);
     ollamaRequest.end();
+
+    while (!done || queue.length > 0) {
+        if (queue.length > 0) {
+            yield queue.shift()!;
+        } else {
+            // wait until we get new data
+            const token = await new Promise<string>((resolve) => {
+                pendingResolve = resolve;
+            });
+            if (token) yield token;
+        }
+    }
 }
 
-//#region Helper Functions
-
-/** * Creates options for the Ollama HTTP request.
- * @returns {Object} Options for the HTTP request
- */ 
-const createOllamaOptions = (): OllamaRequestOptions => {
+/**
+ *  Creates options for the Ollama HTTP request.
+ */
+const createOllamaRequestOptions = (): OllamaRequestOptions => {
     return {
         hostname: HOST,
         port: PORT,
         path: PATH,
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json' }
     };
 }
-//#endregion
-
-export { chatStream };
