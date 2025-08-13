@@ -21,6 +21,6 @@ app.use(session({
     }
 }));
 
-app.use('/chat', chatRoutes);
+app.use('/api/chat', chatRoutes);
 
 export default app;

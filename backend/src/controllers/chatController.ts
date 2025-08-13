@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { HttpStatusCode } from "axios";
-import { chatStreamGenerator } from "../services/ollamaClient";
+import { streamChat } from "../services/chatService";
 import 'express-session';
 
 declare module 'express-session' {
@@ -9,7 +9,10 @@ declare module 'express-session' {
     }
 }
 
-export async function streamMessage(request: Request, response: Response) {
+/**
+ * Appends the user's message and the assistant's reply to the session conversation, streaming the reply as SSE.
+ */
+export async function handleChatMessage(request: Request, response: Response) {
     
     const userMessage = request.body.message;
     if (!userMessage) {
@@ -33,10 +36,18 @@ export async function streamMessage(request: Request, response: Response) {
         response.setHeader('Cache-Control', 'no-cache');
         response.setHeader('Connection', 'keep-alive');
 
-        for await (const token of chatStreamGenerator(request.session.conversation)) {
+        let assistantReply = '';
+
+        for await (const token of streamChat(request.session.conversation)) {
+            assistantReply += token;
             const escapedToken = token.replace(/\n/g, '\\n');
             response.write(`data: ${escapedToken}\n\n`);
         }
+        
+        request.session.conversation.push({
+            role: 'assistant',
+            content: assistantReply
+        });
 
         response.write('event: end\ndata: \n\n');
         response.end();
@@ -48,7 +59,10 @@ export async function streamMessage(request: Request, response: Response) {
     }
 }
 
-export function clearChat(request: Request, response: Response) {
+/**
+ * Clears the session's conversation history.
+ */
+export function handleClearChat(request: Request, response: Response) {
 
     if (!request.session) {
         response

@@ -35,7 +35,7 @@ export const sendMessage = async (message: string) => {
  * @returns {AsyncGenerator<string>} Streamed assistant response tokens
  */
 export async function* sendMessageStream(message: string): AsyncGenerator<string> {
-  const response = await fetch("http://localhost:8000/chat/message/stream", {
+  const response = await fetch("http://localhost:8000/api/chat/message", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -82,7 +82,7 @@ export async function* sendMessageStream(message: string): AsyncGenerator<string
  * @returns {Promise<void>} A promise that resolves when the chat is reset
  */
 export const resetChat = async () => {
-  const response = await fetch("http://localhost:8000/chat", {
+  const response = await fetch("http://localhost:8000/api/chat", {
     method: "DELETE",
     credentials: "include", // Include cookies for session management
   });
