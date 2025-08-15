@@ -1,6 +1,6 @@
-import { Roles } from "../../../types/chat";
-import { UserMessage } from "./UserMessage";
-import { AssistantMessage } from "./AssistantMessage";
+import { Roles } from "@/features/chat/types/chat";
+import { UserMessage } from "@/features/chat/components/conversation/UserMessage";
+import { AssistantMessage } from "@/features/chat/components/conversation/AssistantMessage";
 
 type Props = {
     role: 'user' | 'assistant';

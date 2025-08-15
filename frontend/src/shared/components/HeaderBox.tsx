@@ -1,4 +1,4 @@
-import { Brand } from "./Brand";
+import { Brand } from "@/shared/components/Brand"; 
 
 type Props = {
     isVisible: boolean;

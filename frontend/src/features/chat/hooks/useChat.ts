@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { sendMessageStream, resetChat } from "../api/chat";
-import { Roles, type ChatMessage } from "../types/chat";
+import { sendMessageStream, resetChat } from "@/features/chat/api/chat";
+import { Roles, type ChatMessage } from "@/features/chat/types/chat";
 
 export function useChat() {
     const [messages, setMessages] = useState<ChatMessage[]>([]);

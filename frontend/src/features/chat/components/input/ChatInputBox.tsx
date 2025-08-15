@@ -1,4 +1,4 @@
-import { ChatInput } from "./ChatInput";
+import { ChatInput } from "@/features/chat/components/input/ChatInput";
 
 type Props = {
     isVisible: boolean;

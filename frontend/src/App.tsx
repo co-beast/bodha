@@ -1,9 +1,9 @@
-import { useChat } from "./hooks/useChat";
+import { useChat } from "./features/chat/hooks/useChat";
 
-import { ConversationBox } from "./components/chat/conversation/ConversationBox";
-import { HeaderBox } from "./components/layout/HeaderBox";
-import { WelcomeScreen } from "./components/chat/WelcomeScreen";
-import { ChatInputBox } from "./components/chat/input/ChatInputBox";
+import { ConversationBox } from "@/features/chat/components/conversation/ConversationBox";
+import { HeaderBox } from "@/shared/components/HeaderBox";
+import { WelcomeScreen } from '@/features/chat/components/WelcomeScreen.tsx';
+import { ChatInputBox } from "@/features/chat/components/input/ChatInputBox";
 
 function App() {
   const { messages, loading, handleSend } = useChat();

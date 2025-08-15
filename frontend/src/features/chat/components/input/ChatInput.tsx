@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
-import { useAutoResizeTextArea } from "../../../hooks/useAutoResizeTextArea";
-import { SendButton } from "./SendButton";
+import { useAutoResizeTextArea } from "@/features/chat/hooks/useAutoResizeTextArea";
+import { SendButton } from "@/features/chat/components/input/SendButton";
 
 type Props = {
     onSend: (message: string) => void;

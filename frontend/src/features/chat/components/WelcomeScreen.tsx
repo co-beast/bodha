@@ -1,5 +1,5 @@
-import { ChatInput } from "./input/ChatInput";
-import { Brand } from "../layout/Brand";
+import { ChatInput } from "@/features/chat/components/input/ChatInput";
+import { Brand } from "@/shared/components/Brand";
 
 type Props = {
     onSend: (message: string) => void;
