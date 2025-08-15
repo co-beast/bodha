@@ -3,6 +3,13 @@ import { HttpStatusCode } from "axios";
 import { streamChat } from "../services/chatService";
 import 'express-session';
 
+const SSE_DATA_PREFIX = "data: ";
+const SSE_EVENT_END = "event: end";
+const SSE_DELIMITER = "\n\n";
+
+const NEWLINE_PATTERN = /\n/g;
+const ESCAPED_NEWLINE = "\\n";
+
 declare module 'express-session' {
     interface SessionData {
         conversation?: ChatMessage[];
@@ -40,8 +47,8 @@ export async function handleChatMessage(request: Request, response: Response) {
 
         for await (const token of streamChat(request.session.conversation)) {
             assistantReply += token;
-            const escapedToken = token.replace(/\n/g, '\\n');
-            response.write(`data: ${escapedToken}\n\n`);
+            const escapedToken = token.replace(NEWLINE_PATTERN, ESCAPED_NEWLINE);
+            response.write(`${SSE_DATA_PREFIX}${escapedToken}${SSE_DELIMITER}`);
         }
         
         request.session.conversation.push({
@@ -49,7 +56,7 @@ export async function handleChatMessage(request: Request, response: Response) {
             content: assistantReply
         });
 
-        response.write('event: end\ndata: \n\n');
+        response.write(`${SSE_EVENT_END}\n${SSE_DATA_PREFIX}${SSE_DELIMITER}`);
         response.end();
     } catch (error) {
         console.error(error);
