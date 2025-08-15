@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { sendMessageStream, resetChat } from "@/features/chat/api/chat";
+import { streamAssistantReply, resetChat } from "@/features/chat/api/chatApi";
 import { Roles, type ChatMessage } from "@/features/chat/types/chat";
 
 export function useChat() {
@@ -36,7 +36,7 @@ export function useChat() {
         // Start streaming the assistant's response
         try {
             let fullResponse = "";
-            for await (const token of sendMessageStream(message)) {
+            for await (const token of streamAssistantReply(message)) {
                 fullResponse += token;
 
                 setMessages((prev) => {
