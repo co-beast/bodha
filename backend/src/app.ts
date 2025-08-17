@@ -3,7 +3,8 @@ import session from 'express-session';
 import cors from 'cors';
 
 import chatRoutes from './routes/chatRoutes';
-import { SESSION_SECRET, CLIENT_ORIGIN } from './config';
+import { SESSION_SECRET, CLIENT_ORIGIN } from './config/appConfig';
+import { HttpStatusCode } from 'axios';
 
 const app: Application = express();
 
@@ -20,6 +21,12 @@ app.use(session({
         secure: false,
     }
 }));
+
+app.get('/api/health', (_request, response) => {
+    response
+        .status(HttpStatusCode.Ok)
+        .json({ status: "ok" });
+});
 
 app.use('/api/chat', chatRoutes);
 

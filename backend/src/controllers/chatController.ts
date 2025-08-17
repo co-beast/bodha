@@ -59,7 +59,6 @@ export async function handleChatMessage(request: Request, response: Response) {
         response.write(`${SSE_EVENT_END}\n${SSE_DATA_PREFIX}${SSE_DELIMITER}`);
         response.end();
     } catch (error) {
-        console.error(error);
         response
             .status(HttpStatusCode.InternalServerError)
             .json({ error: 'Failed to get response' });
@@ -72,7 +71,7 @@ export async function handleChatMessage(request: Request, response: Response) {
 export function handleClearChat(request: Request, response: Response) {
 
     if (!request.session) {
-        response
+        return response
             .status(HttpStatusCode.BadRequest)
             .json({ error: 'No session found.' });
     }

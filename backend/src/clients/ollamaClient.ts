@@ -19,7 +19,7 @@ interface OllamaChunkResponse {
  * Calls the Ollama chat API with the given conversation history (streaming enabled)
  * and yields the assistant's reply tokens as they arrive.
  *
- * Example streamed chunk (NDJSON):
+ * Example streamed chunk (NDJSON) from ollama:
  * {
  *   "message": { "role": "assistant", "content": "Hello" },
  *   "done": false
@@ -52,11 +52,6 @@ export async function* chat(
             if (token) yield token;
         }
     }
-
-    if (buffer.trim()) {
-        const token = extractToken(buffer);
-        if (token) yield token;
-    }
 }
 
 const createRequestOptions = (): OllamaRequestOptions => {
@@ -75,7 +70,7 @@ const extractToken = (ndJsonString: string): string | null => {
         const chunk: OllamaChunkResponse = JSON.parse(ndJsonString);
         return chunk.message.content;
     } catch (error) {
-        console.error('Failed to parse ollama chunk:', error);
+        // skip invalid token but do not break entire stream
         return null;
     }
 }
