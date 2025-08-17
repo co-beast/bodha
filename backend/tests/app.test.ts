@@ -1,10 +1,10 @@
 import request from 'supertest';
 
-jest.mock("../src/routes/chatRoutes", () => require("./__mocks__/chatRoutes").default);
-import app from '../src/app';
+jest.mock("@/routes/chatRoutes", () => require("./__mocks__/chatRoutes").default);
+import app from '@/app';
 
 import { HttpStatusCode } from 'axios';
-import { CLIENT_ORIGIN } from '../src/config/appConfig';
+import { CLIENT_ORIGIN } from '@/config/appConfig';
 
 const DUMMY_ENDPOINT = "/api/whatever";
 

@@ -1,4 +1,4 @@
-import * as sut from "../../src/clients/ollamaClient";
+import * as sut from "@/clients/ollamaClient";
 import http, { IncomingMessage } from "http";
 
 jest.mock("http");

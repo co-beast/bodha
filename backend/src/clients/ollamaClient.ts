@@ -1,5 +1,5 @@
 import http, { IncomingMessage } from 'http';
-import { HOST, PORT, PATH, DEFAULT_MODEL } from '../config/ollamaConfig';
+import { HOST, PORT, PATH, DEFAULT_MODEL } from '@/config/ollamaConfig';
 
 interface OllamaRequestOptions {
     hostname: string;

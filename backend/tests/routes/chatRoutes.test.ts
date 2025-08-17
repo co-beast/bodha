@@ -1,13 +1,13 @@
 import { HttpStatusCode } from "axios";
 import request from "supertest";
 import express, { Application } from "express";
-import chatRoutes from "../../src/routes/chatRoutes";
+import chatRoutes from "@/routes/chatRoutes";
 
-jest.mock("../../src/controllers/chatController", () => ({
+jest.mock("@/controllers/chatController", () => ({
   handleChatMessage: jest.fn((_req, res) => { res.status(HttpStatusCode.Ok).json({ mocked: "chatMessage" }); }),
   handleClearChat: jest.fn((_req, res) => { res.status(HttpStatusCode.Ok).json({ mocked: "clearChat" }); }),
 }));
-import * as chatController from "../../src/controllers/chatController";
+import * as chatController from "@/controllers/chatController";
 
 describe("chatRoutes", () => {
     let app: Application;

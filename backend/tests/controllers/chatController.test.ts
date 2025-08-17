@@ -1,5 +1,5 @@
 import { HttpStatusCode } from "axios";
-import * as sut from "../../src/controllers/chatController";
+import * as sut from "@/controllers/chatController";
 
 const SSE_DATA_PREFIX = "data: ";
 const SSE_EVENT_END = "event: end";

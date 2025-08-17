@@ -1,8 +1,8 @@
-import * as sut from "../../src/services/chatService";
+import * as sut from "@/services/chatService";
 
 const tokens = ["Hello ", "world", "!"];
 
-jest.mock("../../src/clients/ollamaClient", () => ({
+jest.mock("@/clients/ollamaClient", () => ({
     chat: jest.fn(async function* () {
         for (const token of tokens) {
             yield token;

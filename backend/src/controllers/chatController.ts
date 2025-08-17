@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { HttpStatusCode } from "axios";
-import { streamChat } from "../services/chatService";
+import { streamChat } from "@/services/chatService";
 import 'express-session';
 
 const SSE_DATA_PREFIX = "data: ";

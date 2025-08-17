@@ -2,8 +2,8 @@ import express, { Application } from 'express';
 import session from 'express-session';
 import cors from 'cors';
 
-import chatRoutes from './routes/chatRoutes';
-import { SESSION_SECRET, CLIENT_ORIGIN } from './config/appConfig';
+import chatRoutes from '@/routes/chatRoutes';
+import { SESSION_SECRET, CLIENT_ORIGIN } from '@/config/appConfig';
 import { HttpStatusCode } from 'axios';
 
 const app: Application = express();
